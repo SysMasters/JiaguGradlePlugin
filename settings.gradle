@@ -1,0 +1,3 @@
+rootProject.name='JiaguGradlePlugin'
+include ':app'
+include ':jiagu-plugin'
