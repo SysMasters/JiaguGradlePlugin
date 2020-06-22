@@ -3,16 +3,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'cn.sysmaster.jiaguplugin'
 
+Properties properties = new Properties()
+InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+properties.load(inputStream)
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
     signingConfigs {
         config {
-            keyAlias 'debug.keystore'
-            keyPassword 'android'
-            storeFile file('../android.keystore')
-            storePassword 'android'
+            keyAlias properties.getProperty("keyStoreAlias")
+            keyPassword properties.getProperty("keyStoreAliasPwd")
+            storeFile file(properties.getProperty("keyStorePath"))
+            storePassword properties.getProperty("keyStorePwd")
             v1SigningEnabled true
             v2SigningEnabled true
         }
@@ -24,7 +28,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        signingConfig signingConfigs.config
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,9 +36,28 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 
+}
+
+jiagu {
+    user = properties.getProperty("user")
+    pwd = properties.getProperty("pwd")
+    jarPath = file("jiagu/jiagu.jar")
+    keyStorePath = file(properties.getProperty("keyStorePath")).absolutePath
+    keyStorePwd = properties.getProperty("keyStorePwd")
+    keyStoreAlias = properties.getProperty("keyStoreAlias")
+    keyStoreAliasPwd = properties.getProperty("keyStoreAliasPwd")
+//    mulpkg = true
+//    mulPkgConfigPath = file("jiagu/channels.txt").absolutePath
+    auto = true
 }
 
 dependencies {
