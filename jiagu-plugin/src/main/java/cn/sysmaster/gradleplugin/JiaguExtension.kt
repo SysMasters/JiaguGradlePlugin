@@ -1,4 +1,4 @@
-package cn.sysmaster.jiaguplugin
+package cn.sysmaster.gradleplugin
 
 /**
  * @author sysmaster

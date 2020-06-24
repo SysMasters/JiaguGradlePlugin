@@ -57,7 +57,7 @@ jiagu {
     keyStoreAliasPwd = properties.getProperty("keyStoreAliasPwd")
 //    mulpkg = true
 //    mulPkgConfigPath = file("jiagu/channels.txt").absolutePath
-    auto = true
+    auto = false
 }
 
 dependencies {

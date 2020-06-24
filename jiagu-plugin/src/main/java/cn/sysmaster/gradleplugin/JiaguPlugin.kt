@@ -1,6 +1,6 @@
-package cn.sysmaster.jiaguplugin
+package cn.sysmaster.gradleplugin
 
-import cn.sysmaster.jiaguplugin.task.JiaguTask
+import cn.sysmaster.gradleplugin.task.JiaguTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -21,11 +21,9 @@ class JiaguPlugin : Plugin<Project> {
             // 创建任务
             createTasks(target)
 
-            val jiaguExtension = target.extensions.getByType(JiaguExtension::class.java)
-            // 是否自动加固(打包完毕后自动加固)
-            if (jiaguExtension.auto) {
-                println("================自动打包=======================")
-                target.afterEvaluate {
+            target.afterEvaluate {
+                val jiaguExtension = target.extensions.getByType(JiaguExtension::class.java)
+                if (jiaguExtension.auto) {
                     applyTask(target)
                 }
             }

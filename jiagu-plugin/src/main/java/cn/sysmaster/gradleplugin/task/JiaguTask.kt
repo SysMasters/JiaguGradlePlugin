@@ -1,10 +1,7 @@
-package cn.sysmaster.jiaguplugin.task
+package cn.sysmaster.gradleplugin.task
 
-import cn.sysmaster.jiaguplugin.JiaguExtension
-import cn.sysmaster.jiaguplugin.log
-import com.android.build.gradle.AndroidConfig
+import cn.sysmaster.gradleplugin.JiaguExtension
 import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.api.ApkOutputFile
 import org.apache.http.util.TextUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -61,14 +58,10 @@ open class JiaguTask : DefaultTask() {
         val signingConfigs = android.signingConfigs.getByName("config")
 
         // 签名
-        val keyStorePath =
-            if (TextUtils.isEmpty(jiaguExtension.keyStorePath)) signingConfigs.storeFile.absolutePath else jiaguExtension.keyStorePath
-        val keyStorePwd =
-            if (TextUtils.isEmpty(jiaguExtension.keyStorePwd)) signingConfigs.storePassword else jiaguExtension.keyStorePwd
-        val keyStoreAlias =
-            if (TextUtils.isEmpty(jiaguExtension.keyStoreAlias)) signingConfigs.keyAlias else jiaguExtension.keyStoreAlias
-        val keyStoreAliasPwd =
-            if (TextUtils.isEmpty(jiaguExtension.keyStoreAliasPwd)) signingConfigs.keyPassword else jiaguExtension.keyStoreAliasPwd
+        val keyStorePath = jiaguExtension.keyStorePath
+        val keyStorePwd = jiaguExtension.keyStorePwd
+        val keyStoreAlias = jiaguExtension.keyStoreAlias
+        val keyStoreAliasPwd = jiaguExtension.keyStoreAliasPwd
 
         if (TextUtils.isEmpty(keyStorePath)) throw AssertionError("签名路径不能为空")
         if (TextUtils.isEmpty(keyStorePwd)) throw AssertionError("签名密码不能为空")
@@ -84,15 +77,12 @@ open class JiaguTask : DefaultTask() {
         val config = jiaguExtension.addConfig
         // 匹配apk名称
         val matchName = jiaguExtension.matchName
-        // 是否自动加固
-        val auto = jiaguExtension.auto
         // apk路径
         val defaultOutPutPath =
             project.buildDir.absolutePath + File.separator + "outputs" + File.separator + "apk" + File.separator + "release"
-        println("apk路径：${defaultOutPutPath}")
         val apkPath =
             if (TextUtils.isEmpty(jiaguExtension.apkPath)) defaultOutPutPath else jiaguExtension.apkPath
-
+        println("apk路径：${apkPath}")
         // 输出路径
         val outApkPath =
             if (TextUtils.isEmpty(jiaguExtension.outApkPath)) defaultOutPutPath else jiaguExtension.outApkPath
@@ -100,7 +90,7 @@ open class JiaguTask : DefaultTask() {
 
         println("------------------检查加固配置信息结束------------------")
 
-        println("------------------360加固开始------------------")
+        println("----------------------360加固开始---------------------")
 
         println("360加固jar包路径：${jarPath}")
         var apkFile: File? = null
@@ -124,9 +114,9 @@ open class JiaguTask : DefaultTask() {
         }
         "java -Dfile.encoding=utf-8 -jar $jarPath -jiagu ${apkFile?.absolutePath} $outApkPath -autosign ${if (mulpkg) " -automulpkg" else ""}".doCommand()
 
-        println("------------------360加固结束------------------")
+        println("----------------------360加固结束---------------------")
 
-        println("输出路径$outApkPath")
+        println("输出路径:${outApkPath}")
     }
 }
 
